@@ -81,7 +81,9 @@ COPY turbo.json turbo.json
 
 RUN npm install -g "turbo@^1.9.3"
 
-RUN turbo run build --filter=@documenso/remix...
+# The Remix typecheck is memory intensive in a production container build.
+# Keep this scoped to build time; the runner image retains upstream defaults.
+RUN NODE_OPTIONS=--max-old-space-size=8192 turbo run build --filter=@documenso/remix...
 
 ###########################
 #     RUNNER CONTAINER    #
