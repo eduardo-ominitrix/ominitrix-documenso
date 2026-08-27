@@ -30,6 +30,7 @@ jobs:
       - name: Commit changes and push to reserved branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
@@ -60,6 +61,7 @@ jobs:
 
           # Does a PR already exist?
           EXISTING_PR=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
             --state open \
             --head "$BRANCH" \
             --json number \
@@ -68,6 +70,7 @@ jobs:
           if [ -z "$EXISTING_PR" ]; then
             echo "No existing PR — creating new one."
             gh pr create \
+              --repo "$GITHUB_REPOSITORY" \
               --title "chore: extract translations" \
               --body "Automated translation extraction" \
               --base main \
