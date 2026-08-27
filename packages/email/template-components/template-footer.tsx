@@ -64,9 +64,13 @@ export const TemplateFooter = ({ isDocument = true, reportUrl }: TemplateFooterP
 
       {!branding.brandingEnabled && (
         <Text className="my-8 text-muted-foreground text-sm">
-          Documenso, Inc.
+          Ominitrix
           <br />
-          2261 Market Street, #5211, San Francisco, CA 94114, USA
+          Tecnologia em rastreamento e segurança
+          <br />
+          <Link className="text-primary" href="https://ominitrix.com">
+            ominitrix.com
+          </Link>
         </Text>
       )}
     </Section>

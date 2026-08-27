@@ -1,3 +1,12 @@
+## Ominitrix self-hosted branding
+
+This public fork is deployed by Ominitrix from upstream Documenso `v2.15.0`.
+It replaces the default visual header in transactional emails with the
+Ominitrix logo and identifies Ominitrix in the email footer. The Documenso
+attribution and the upstream AGPL-3.0 license remain intact.
+
+Upstream source: https://github.com/documenso/documenso/tree/v2.15.0
+
 <img src="https://github.com/documenso/documenso/assets/13398220/a643571f-0239-46a6-a73e-6bef38d1228b" alt="Documenso Logo">
 
 <p align="center" style="margin-top: 20px">
