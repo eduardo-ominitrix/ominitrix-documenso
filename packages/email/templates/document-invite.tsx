@@ -96,7 +96,9 @@ export const DocumentInviteEmailTemplate = ({
                 {customBody ? (
                   <TemplateCustomMessageBody text={customBody} />
                 ) : (
-                  {inviterName} convidou você para {action} o documento “{documentName}”.
+                  <>
+                    {inviterName} convidou você para {action} o documento “{documentName}”.
+                  </>
                 )}
               </Text>
             </Section>
