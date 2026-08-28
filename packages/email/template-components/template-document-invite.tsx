@@ -60,8 +60,10 @@ export const TemplateDocumentInvite = ({
         <Text className="mx-auto mb-0 max-w-[80%] text-center font-semibold text-foreground text-lg">
           {match({ selfSigner, organisationType, includeSenderDetails, teamName })
             .with({ selfSigner: true }, () => (
-              Assine seu documento
-              <br />“{documentName}”
+              <>
+                Assine seu documento
+                <br />“{documentName}”
+              </>
             ))
             .with(
               {
@@ -70,17 +72,23 @@ export const TemplateDocumentInvite = ({
                 teamName: P.string,
               },
               () => (
-                {inviterName}, em nome de “{teamName}”, convidou você para {action}
-                <br />“{documentName}”
+                <>
+                  {inviterName}, em nome de “{teamName}”, convidou você para {action}
+                  <br />“{documentName}”
+                </>
               ),
             )
             .with({ organisationType: OrganisationType.ORGANISATION, teamName: P.string }, () => (
-              {teamName} convidou você para {action}
-              <br />“{documentName}”
+              <>
+                {teamName} convidou você para {action}
+                <br />“{documentName}”
+              </>
             ))
             .otherwise(() => (
-              {inviterName} convidou você para {action}
-              <br />“{documentName}”
+              <>
+                {inviterName} convidou você para {action}
+                <br />“{documentName}”
+              </>
             ))}
         </Text>
 

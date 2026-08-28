@@ -1,4 +1,3 @@
-import type { RecipientRole } from '@prisma/client';
 import { OrganisationType, RecipientRole } from '@prisma/client';
 
 import { Body, Container, Head, Hr, Html, Link, Preview, Section, Text } from '../components';
