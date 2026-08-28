@@ -1,6 +1,3 @@
-import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react';
-
 import { Body, Container, Head, Html, Preview, Section } from '../components';
 import { TemplateBrandingLogo } from '../template-components/template-branding-logo';
 import { TemplateDocumentRecipientSigned } from '../template-components/template-document-recipient-signed';
@@ -19,22 +16,20 @@ export const DocumentRecipientSignedEmailTemplate = ({
   recipientEmail = 'lucas@documenso.com',
   assetBaseUrl = 'http://localhost:3002',
 }: DocumentRecipientSignedEmailTemplateProps) => {
-  const { _ } = useLingui();
-
   const recipientReference = recipientName || recipientEmail;
 
-  const previewText = msg`${recipientReference} has signed ${documentName}`;
+  const previewText = `${recipientReference} assinou “${documentName}”`;
 
   return (
     <Html>
       <Head />
-      <Body className="mx-auto my-auto font-sans">
-        <Preview>{_(previewText)}</Preview>
+      <Body className="mx-auto my-auto bg-[#f6f7fb] font-sans">
+        <Preview>{previewText}</Preview>
 
-        <Section className="bg-background">
-          <Container className="mx-auto mt-8 mb-2 max-w-xl rounded-lg border border-border border-solid p-2 backdrop-blur-sm">
-            <Section className="p-2">
-              <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-4 h-6" />
+        <Section>
+          <Container className="mx-auto mt-8 mb-2 max-w-xl rounded-2xl border border-solid border-[#e5e7eb] bg-white p-8 shadow-sm">
+            <Section>
+              <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-8 h-10 w-auto" />
 
               <TemplateDocumentRecipientSigned
                 documentName={documentName}
@@ -45,7 +40,7 @@ export const DocumentRecipientSignedEmailTemplate = ({
             </Section>
           </Container>
 
-          <Container className="mx-auto max-w-xl">
+          <Container className="mx-auto max-w-xl px-4">
             <TemplateFooter />
           </Container>
         </Section>

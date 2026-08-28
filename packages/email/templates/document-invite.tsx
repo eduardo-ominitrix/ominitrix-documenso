@@ -1,9 +1,5 @@
-import { RECIPIENT_ROLES_DESCRIPTION } from '@documenso/lib/constants/recipient-roles';
-import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react';
-import { Trans } from '@lingui/react/macro';
 import type { RecipientRole } from '@prisma/client';
-import { OrganisationType } from '@prisma/client';
+import { OrganisationType, RecipientRole } from '@prisma/client';
 
 import { Body, Container, Head, Hr, Html, Link, Preview, Section, Text } from '../components';
 import { TemplateBrandingLogo } from '../template-components/template-branding-logo';
@@ -37,33 +33,37 @@ export const DocumentInviteEmailTemplate = ({
   organisationType,
   reportUrl,
 }: DocumentInviteEmailTemplateProps) => {
-  const { _ } = useLingui();
+  const action = {
+    [RecipientRole.SIGNER]: 'assinar',
+    [RecipientRole.VIEWER]: 'visualizar',
+    [RecipientRole.APPROVER]: 'aprovar',
+    [RecipientRole.CC]: 'acompanhar',
+    [RecipientRole.ASSISTANT]: 'auxiliar',
+  }[role];
 
-  const action = _(RECIPIENT_ROLES_DESCRIPTION[role].actionVerb).toLowerCase();
-
-  let previewText = msg`${inviterName} has invited you to ${action} ${documentName}`;
+  let previewText = `${inviterName} convidou você para ${action} “${documentName}”`;
 
   if (organisationType === OrganisationType.ORGANISATION) {
     previewText = includeSenderDetails
-      ? msg`${inviterName} on behalf of "${teamName}" has invited you to ${action} ${documentName}`
-      : msg`${teamName} has invited you to ${action} ${documentName}`;
+      ? `${inviterName}, em nome de “${teamName}”, convidou você para ${action} “${documentName}”`
+      : `${teamName} convidou você para ${action} “${documentName}”`;
   }
 
   if (selfSigner) {
-    previewText = msg`Please ${action} your document ${documentName}`;
+    previewText = `Assine seu documento “${documentName}”`;
   }
 
   return (
     <Html>
       <Head />
 
-      <Body className="mx-auto my-auto bg-background font-sans">
-        <Preview>{_(previewText)}</Preview>
+      <Body className="mx-auto my-auto bg-[#f6f7fb] font-sans">
+        <Preview>{previewText}</Preview>
 
         <Section>
-          <Container className="mx-auto mt-8 mb-2 max-w-xl rounded-lg border border-border border-solid p-4 backdrop-blur-sm">
+          <Container className="mx-auto mt-8 mb-2 max-w-xl rounded-2xl border border-solid border-[#e5e7eb] bg-white p-8 shadow-sm">
             <Section>
-              <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-4 h-6" />
+              <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-8 h-10 w-auto" />
 
               <TemplateDocumentInvite
                 inviterName={inviterName}
@@ -80,16 +80,16 @@ export const DocumentInviteEmailTemplate = ({
             </Section>
           </Container>
 
-          <Container className="mx-auto mt-12 max-w-xl">
+          <Container className="mx-auto mt-8 max-w-xl px-4">
             <Section>
               {organisationType === OrganisationType.PERSONAL && (
                 <Text className="my-4 font-semibold text-base">
-                  <Trans>
+                  <>
                     {inviterName}{' '}
                     <Link className="font-normal text-muted-foreground" href={`mailto:${inviterEmail}`}>
                       ({inviterEmail})
                     </Link>
-                  </Trans>
+                  </>
                 </Text>
               )}
 
@@ -97,17 +97,15 @@ export const DocumentInviteEmailTemplate = ({
                 {customBody ? (
                   <TemplateCustomMessageBody text={customBody} />
                 ) : (
-                  <Trans>
-                    {inviterName} has invited you to {action} the document "{documentName}".
-                  </Trans>
+                  {inviterName} convidou você para {action} o documento “{documentName}”.
                 )}
               </Text>
             </Section>
           </Container>
 
-          <Hr className="mx-auto mt-12 max-w-xl" />
+          <Hr className="mx-auto mt-8 max-w-xl border-[#dfe3ef]" />
 
-          <Container className="mx-auto max-w-xl">
+          <Container className="mx-auto max-w-xl px-4">
             <TemplateFooter reportUrl={reportUrl} />
           </Container>
         </Section>

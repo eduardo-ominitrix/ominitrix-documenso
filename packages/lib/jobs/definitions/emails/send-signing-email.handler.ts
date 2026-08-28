@@ -1,7 +1,6 @@
 import DocumentInviteEmailTemplate from '@documenso/email/templates/document-invite';
 import { isRecipientEmailValidForSending } from '@documenso/lib/utils/recipients';
 import { prisma } from '@documenso/prisma';
-import { msg } from '@lingui/core/macro';
 import {
   DocumentSource,
   DocumentStatus,
@@ -12,9 +11,8 @@ import {
 } from '@prisma/client';
 import { createElement } from 'react';
 
-import { getI18nInstance } from '../../../client-only/providers/i18n-server';
 import { NEXT_PUBLIC_WEBAPP_URL } from '../../../constants/app';
-import { RECIPIENT_ROLE_TO_EMAIL_TYPE, RECIPIENT_ROLES_DESCRIPTION } from '../../../constants/recipient-roles';
+import { RECIPIENT_ROLE_TO_EMAIL_TYPE } from '../../../constants/recipient-roles';
 import { buildEnvelopeEmailHeaders } from '../../../server-only/email/build-envelope-email-headers';
 import { getEmailContext } from '../../../server-only/email/get-email-context';
 import { assertOrganisationRatesAndLimits } from '../../../server-only/rate-limit/assert-organisation-rates-and-limits';
@@ -122,39 +120,44 @@ export const run = async ({ payload, io }: { payload: TSendSigningEmailJobDefini
   const { email, name } = recipient;
   const selfSigner = email === user.email;
 
-  const i18n = await getI18nInstance(emailLanguage);
-
-  const recipientActionVerb = i18n._(RECIPIENT_ROLES_DESCRIPTION[recipient.role].actionVerb).toLowerCase();
+  const recipientActionVerb = {
+    [RecipientRole.SIGNER]: 'assinar',
+    [RecipientRole.VIEWER]: 'visualizar',
+    [RecipientRole.APPROVER]: 'aprovar',
+    [RecipientRole.CC]: 'acompanhar',
+    [RecipientRole.ASSISTANT]: 'auxiliar',
+  }[recipient.role];
+  const recipientActionPastTense = {
+    [RecipientRole.SIGNER]: 'assinado',
+    [RecipientRole.VIEWER]: 'visualizado',
+    [RecipientRole.APPROVER]: 'aprovado',
+    [RecipientRole.CC]: 'acompanhado',
+    [RecipientRole.ASSISTANT]: 'auxiliado',
+  }[recipient.role];
 
   let emailMessage = customEmail?.message || '';
-  let emailSubject = i18n._(msg`Please ${recipientActionVerb} this document`);
+  let emailSubject = `Ação necessária: ${recipientActionVerb} documento`;
 
   if (selfSigner) {
-    emailMessage = i18n._(
-      msg`You have initiated the document ${`"${envelope.title}"`} that requires you to ${recipientActionVerb} it.`,
-    );
-    emailSubject = i18n._(msg`Please ${recipientActionVerb} your document`);
+    emailMessage = `Você iniciou o documento “${envelope.title}”, que precisa ser ${recipientActionPastTense} por você.`;
+    emailSubject = `Ação necessária: ${recipientActionVerb} seu documento`;
   }
 
   if (isDirectTemplate) {
-    emailMessage = i18n._(
-      msg`A document was created by your direct template that requires you to ${recipientActionVerb} it.`,
-    );
-    emailSubject = i18n._(msg`Please ${recipientActionVerb} this document created by your direct template`);
+    emailMessage = `Um documento foi criado pelo seu modelo direto e precisa ser ${recipientActionPastTense} por você.`;
+    emailSubject = `Ação necessária: ${recipientActionVerb} documento do modelo`;
   }
 
   if (organisationType === OrganisationType.ORGANISATION) {
-    emailSubject = i18n._(msg`${team.name} invited you to ${recipientActionVerb} a document`);
+    emailSubject = `${team.name} convidou você para ${recipientActionVerb} um documento`;
     emailMessage = customEmail?.message ?? '';
 
     if (!emailMessage) {
       const inviterName = user.name || '';
 
-      emailMessage = i18n._(
-        settings.includeSenderDetails
-          ? msg`${inviterName} on behalf of "${team.name}" has invited you to ${recipientActionVerb} the document "${envelope.title}".`
-          : msg`${team.name} has invited you to ${recipientActionVerb} the document "${envelope.title}".`,
-      );
+      emailMessage = settings.includeSenderDetails
+        ? `${inviterName}, em nome de “${team.name}”, convidou você para ${recipientActionVerb} o documento “${envelope.title}”.`
+        : `${team.name} convidou você para ${recipientActionVerb} o documento “${envelope.title}”.`;
     }
   }
 

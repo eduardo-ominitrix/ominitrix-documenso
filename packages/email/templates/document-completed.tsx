@@ -1,6 +1,3 @@
-import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react';
-
 import { Body, Container, Head, Html, Preview, Section } from '../components';
 import { TemplateBrandingLogo } from '../template-components/template-branding-logo';
 import type { TemplateDocumentCompletedProps } from '../template-components/template-document-completed';
@@ -19,20 +16,18 @@ export const DocumentCompletedEmailTemplate = ({
   customBody,
   reportUrl,
 }: DocumentCompletedEmailTemplateProps) => {
-  const { _ } = useLingui();
-
-  const previewText = msg`Completed Document`;
+  const previewText = `Documento concluído: ${documentName}`;
 
   return (
     <Html>
       <Head />
-      <Body className="mx-auto my-auto font-sans">
-        <Preview>{_(previewText)}</Preview>
+      <Body className="mx-auto my-auto bg-[#f6f7fb] font-sans">
+        <Preview>{previewText}</Preview>
 
-        <Section className="bg-background">
-          <Container className="mx-auto mt-8 mb-2 max-w-xl rounded-lg border border-border border-solid p-2 backdrop-blur-sm">
-            <Section className="p-2">
-              <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-4 h-6" />
+        <Section>
+          <Container className="mx-auto mt-8 mb-2 max-w-xl rounded-2xl border border-solid border-[#e5e7eb] bg-white p-8 shadow-sm">
+            <Section>
+              <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-8 h-10 w-auto" />
 
               <TemplateDocumentCompleted
                 downloadLink={downloadLink}
@@ -43,7 +38,7 @@ export const DocumentCompletedEmailTemplate = ({
             </Section>
           </Container>
 
-          <Container className="mx-auto max-w-xl">
+          <Container className="mx-auto max-w-xl px-4">
             <TemplateFooter reportUrl={reportUrl} />
           </Container>
         </Section>

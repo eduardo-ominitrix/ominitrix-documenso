@@ -1,8 +1,4 @@
-import { RECIPIENT_ROLES_DESCRIPTION } from '@documenso/lib/constants/recipient-roles';
-import { useLingui } from '@lingui/react';
-import { Trans } from '@lingui/react/macro';
 import { RecipientRole } from '@prisma/client';
-import { match } from 'ts-pattern';
 
 import { Button, Section, Text } from '../components';
 import { TemplateDocumentImage } from './template-document-image';
@@ -22,9 +18,29 @@ export const TemplateDocumentReminder = ({
   assetBaseUrl,
   role,
 }: TemplateDocumentReminderProps) => {
-  const { _ } = useLingui();
+  const action = {
+    [RecipientRole.SIGNER]: 'assinar',
+    [RecipientRole.VIEWER]: 'visualizar',
+    [RecipientRole.APPROVER]: 'aprovar',
+    [RecipientRole.CC]: 'acompanhar',
+    [RecipientRole.ASSISTANT]: 'auxiliar',
+  }[role];
 
-  const { actionVerb } = RECIPIENT_ROLES_DESCRIPTION[role];
+  const continuation = {
+    [RecipientRole.SIGNER]: 'Assine o documento para continuar.',
+    [RecipientRole.VIEWER]: 'Visualize o documento para continuar.',
+    [RecipientRole.APPROVER]: 'Analise e aprove o documento para continuar.',
+    [RecipientRole.CC]: '',
+    [RecipientRole.ASSISTANT]: 'Auxilie no preenchimento do documento para continuar.',
+  }[role];
+
+  const callToAction = {
+    [RecipientRole.SIGNER]: 'Assinar documento',
+    [RecipientRole.VIEWER]: 'Visualizar documento',
+    [RecipientRole.APPROVER]: 'Aprovar documento',
+    [RecipientRole.CC]: '',
+    [RecipientRole.ASSISTANT]: 'Auxiliar no documento',
+  }[role];
 
   return (
     <>
@@ -32,38 +48,24 @@ export const TemplateDocumentReminder = ({
 
       <Section>
         <Text className="mx-auto mb-0 max-w-[80%] text-center font-semibold text-foreground text-lg">
-          <Trans>
-            Reminder: Please {_(actionVerb).toLowerCase()} your document
-            <br />"{documentName}"
-          </Trans>
+          Lembrete: é necessário {action} o documento
+          <br />“{documentName}”
         </Text>
 
         <Text className="my-1 text-center text-base text-muted-foreground">
-          <Trans>Hi {recipientName},</Trans>
+          Olá, {recipientName}.
         </Text>
 
         <Text className="my-1 text-center text-base text-muted-foreground">
-          {match(role)
-            .with(RecipientRole.SIGNER, () => <Trans>Continue by signing the document.</Trans>)
-            .with(RecipientRole.VIEWER, () => <Trans>Continue by viewing the document.</Trans>)
-            .with(RecipientRole.APPROVER, () => <Trans>Continue by approving the document.</Trans>)
-            .with(RecipientRole.CC, () => '')
-            .with(RecipientRole.ASSISTANT, () => <Trans>Continue by assisting with the document.</Trans>)
-            .exhaustive()}
+          {continuation}
         </Text>
 
         <Section className="mt-8 mb-6 text-center">
           <Button
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-center font-medium text-primary-foreground text-sm no-underline"
+            className="inline-flex items-center justify-center rounded-lg bg-[#5b5cf6] px-6 py-3 text-center font-semibold text-sm text-white no-underline"
             href={signDocumentLink}
           >
-            {match(role)
-              .with(RecipientRole.SIGNER, () => <Trans>Sign Document</Trans>)
-              .with(RecipientRole.VIEWER, () => <Trans>View Document</Trans>)
-              .with(RecipientRole.APPROVER, () => <Trans>Approve Document</Trans>)
-              .with(RecipientRole.CC, () => '')
-              .with(RecipientRole.ASSISTANT, () => <Trans>Assist Document</Trans>)
-              .exhaustive()}
+            {callToAction}
           </Button>
         </Section>
       </Section>

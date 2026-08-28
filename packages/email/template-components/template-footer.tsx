@@ -1,4 +1,3 @@
-import { Trans } from '@lingui/react/macro';
 import { Fragment } from 'react';
 
 import { Link, Section, Text } from '../components';
@@ -18,26 +17,22 @@ export const TemplateFooter = ({ isDocument = true, reportUrl }: TemplateFooterP
   return (
     <Section>
       {reportUrl && (
-        <Text className="my-4 text-base text-muted-foreground">
-          <Trans>
-            Did not expect this email?{' '}
+        <Text className="my-5 text-sm leading-6 text-muted-foreground">
+          Não reconhece este e-mail?{' '}
             <Link className="text-primary" href={reportUrl}>
-              Click here to report the sender
+              Informe o remetente
             </Link>
-            . Never sign a document you don't recognize or weren't expecting.
-          </Trans>
+            . Nunca assine um documento que você não reconhece ou não esperava receber.
         </Text>
       )}
 
       {isDocument && !branding.brandingHidePoweredBy && (
-        <Text className="my-4 text-base text-muted-foreground">
-          <Trans>
-            This document was sent using{' '}
+        <Text className="my-4 text-sm text-muted-foreground">
+          Este documento foi enviado com{' '}
             <Link className="text-primary" href="https://documen.so/mail-footer">
               Documenso
             </Link>
             .
-          </Trans>
         </Text>
       )}
 

@@ -1,6 +1,3 @@
-import { RECIPIENT_ROLES_DESCRIPTION } from '@documenso/lib/constants/recipient-roles';
-import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react';
 import { RecipientRole } from '@prisma/client';
 
 import { Body, Container, Head, Hr, Html, Preview, Section, Text } from '../components';
@@ -28,23 +25,27 @@ export const DocumentReminderEmailTemplate = ({
   role = RecipientRole.SIGNER,
   reportUrl,
 }: DocumentReminderEmailTemplateProps) => {
-  const { _ } = useLingui();
+  const action = {
+    [RecipientRole.SIGNER]: 'assinar',
+    [RecipientRole.VIEWER]: 'visualizar',
+    [RecipientRole.APPROVER]: 'aprovar',
+    [RecipientRole.CC]: 'acompanhar',
+    [RecipientRole.ASSISTANT]: 'auxiliar',
+  }[role];
 
-  const action = _(RECIPIENT_ROLES_DESCRIPTION[role].actionVerb).toLowerCase();
-
-  const previewText = msg`Reminder to ${action} ${documentName}`;
+  const previewText = `Lembrete para ${action} “${documentName}”`;
 
   return (
     <Html>
       <Head />
 
-      <Body className="mx-auto my-auto bg-background font-sans">
-        <Preview>{_(previewText)}</Preview>
+      <Body className="mx-auto my-auto bg-[#f6f7fb] font-sans">
+        <Preview>{previewText}</Preview>
 
         <Section>
-          <Container className="mx-auto mt-8 mb-2 max-w-xl rounded-lg border border-border border-solid p-4 backdrop-blur-sm">
+          <Container className="mx-auto mt-8 mb-2 max-w-xl rounded-2xl border border-solid border-[#e5e7eb] bg-white p-8 shadow-sm">
             <Section>
-              <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-4 h-6" />
+              <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-8 h-10 w-auto" />
 
               <TemplateDocumentReminder
                 recipientName={recipientName}
@@ -57,7 +58,7 @@ export const DocumentReminderEmailTemplate = ({
           </Container>
 
           {customBody && (
-            <Container className="mx-auto mt-12 max-w-xl">
+            <Container className="mx-auto mt-8 max-w-xl px-4">
               <Section>
                 <Text className="mt-2 text-base text-muted-foreground">
                   <TemplateCustomMessageBody text={customBody} />
@@ -66,9 +67,9 @@ export const DocumentReminderEmailTemplate = ({
             </Container>
           )}
 
-          <Hr className="mx-auto mt-12 max-w-xl" />
+          <Hr className="mx-auto mt-8 max-w-xl border-[#dfe3ef]" />
 
-          <Container className="mx-auto max-w-xl">
+          <Container className="mx-auto max-w-xl px-4">
             <TemplateFooter reportUrl={reportUrl} />
           </Container>
         </Section>
