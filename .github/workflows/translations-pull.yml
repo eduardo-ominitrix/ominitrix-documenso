@@ -1,10 +1,11 @@
-# Pull down translations from Crowdin every two hours or when triggered manually.
+# Pull translations from Crowdin when triggered manually.
+#
+# The scheduled run is disabled because this repository does not currently have
+# a working Crowdin integration, which otherwise produces recurring failed runs.
 
 name: 'Pull translations'
 
 on:
-  schedule:
-    - cron: '0 */2 * * *' # Every two hours.
   workflow_dispatch:
   workflow_call:
 
